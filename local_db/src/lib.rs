@@ -20,8 +20,9 @@ pub struct JsonPazckagerStorage {
 }
 
 impl JsonPazckagerStorage {
-    pub fn new(file_path: impl Into<PathBuf>) -> StoreResult<Self> {
-        let file_path = file_path.into();
+    pub fn new(file_path: &str) -> StoreResult<Self> {
+        let expanded_path = shellexpand::tilde(&file_path).to_string();
+        let file_path = PathBuf::from(expanded_path);
 
         if let Some(parent) = file_path.parent() {
             fs::create_dir_all(parent).map_err(|e| Error::InternalStoreError(e.to_string()))?;

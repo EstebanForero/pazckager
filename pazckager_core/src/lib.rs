@@ -128,12 +128,12 @@ impl<T: PazckagerStorage> PazckagerCore<T> {
                 self.store.store_package(PackageData {
                     package_name: package_data.package_name,
                     instalation_tool: package_data.instalation_tool,
-                    category_name: String::new(),
+                    category_name: "default".to_string(),
                 })?;
             }
         }
 
-        todo!()
+        Ok(())
     }
 
     pub fn get_packages(&self) -> Result<Vec<PackageData>> {
