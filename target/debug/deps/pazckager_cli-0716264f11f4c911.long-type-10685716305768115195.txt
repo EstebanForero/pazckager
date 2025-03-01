@@ -1,0 +1,2 @@
+pazckager_core::models::PazckagerCoreBuilder<core::result::Result<local_db::JsonPazckagerStorage, pazckager_core::traits::StoreError>>
+pazckager_core::models::PazckagerCoreBuilder<std::result::Result<local_db::JsonPazckagerStorage, pazckager_core::traits::StoreError>>

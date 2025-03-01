@@ -1,3 +1,3 @@
 [workspace]
-members = ["arch_bindings", "local_db", "pazckager_cli", "pazckager_core", "pazckager_frontend"]
+members = ["local_db", "pacman_bindings", "pazckager_cli", "pazckager_core", "pazckager_frontend"]
 resolver = "3"
