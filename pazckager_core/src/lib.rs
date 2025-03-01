@@ -125,11 +125,11 @@ impl<T: PazckagerStorage> PazckagerCore<T> {
 
         for package_data in packages_to_add {
             if !self.store.package_exists(&package_data.package_name)? {
-                self.add_package(
-                    package_data.package_name,
-                    Some(package_data.instalation_tool),
-                    None,
-                )?;
+                self.store.store_package(PackageData {
+                    package_name: package_data.package_name,
+                    instalation_tool: package_data.instalation_tool,
+                    category_name: String::new(),
+                })?;
             }
         }
 

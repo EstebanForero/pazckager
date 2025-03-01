@@ -123,6 +123,7 @@ fn main() -> Result<()> {
             }
         }
         Commands::SyncPackages => {
+            println!("Executng sync packages");
             core.sync_packages()?;
             println!("Packages succesfully sync");
         }
