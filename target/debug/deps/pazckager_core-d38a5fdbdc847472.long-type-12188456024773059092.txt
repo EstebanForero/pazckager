@@ -1,0 +1,2 @@
+&core::iter::adapters::cloned::Cloned<std::collections::hash::map::Values<'_, models::InstallationTools, alloc::boxed::Box<dyn traits::InstallationTool>>>
+&std::iter::Cloned<std::collections::hash_map::Values<'_, models::InstallationTools, std::boxed::Box<dyn traits::InstallationTool>>>

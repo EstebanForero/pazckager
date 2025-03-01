@@ -162,6 +162,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "local_db",
+ "pacman_bindings",
  "pazckager_core",
 ]
 

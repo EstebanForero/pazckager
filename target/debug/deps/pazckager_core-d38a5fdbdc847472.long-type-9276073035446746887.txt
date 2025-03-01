@@ -1,0 +1,1 @@
+std::iter::Cloned<std::collections::hash_map::Values<'_, models::InstallationTools, std::boxed::Box<dyn traits::InstallationTool>>>

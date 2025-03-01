@@ -2,10 +2,10 @@ use clap::{Args, Parser, Subcommand};
 use std::collections::HashMap;
 
 // Assuming these are your existing imports
-use pazckager_core::{models::PazckagerCoreBuilder, *};
-use models::{Category, InstallationTools, PackageData};
-use traits::{InstallationTool, PazckagerStorage};
 use err::{Error, Result};
+use models::{Category, InstallationTools, PackageData};
+use pazckager_core::{models::PazckagerCoreBuilder, *};
+use traits::{InstallationTool, PazckagerStorage};
 
 // CLI structure definition
 #[derive(Parser)]
@@ -30,6 +30,8 @@ enum Commands {
     ListCategories,
     /// Lists packages in a specific category
     ListCategoryPackages(ListCategoryPackagesArgs),
+
+    SyncPackages,
 }
 
 #[derive(Args)]
@@ -66,21 +68,17 @@ struct ListCategoryPackagesArgs {
     category_name: String,
 }
 
-// Main function with CLI integration
 fn main() -> Result<()> {
-    // Parse CLI arguments
     let cli = Cli::parse();
 
-    // Initialize your storage and installers (you'll need to replace this with your actual implementation)
-    let store = local_db::JsonPazckagerStorage::new("~/.local/share/pazckager_store.json");
-    let pacman = ;
-    // Add your installers to the HashMap here
-    // package_installers.insert(InstallationTools::SomeTool, Box::new(SomeInstaller::new()));
+    let store = local_db::JsonPazckagerStorage::new("~/.local/share/pazckager_store.json").unwrap();
+    let pacman = pacman_bindings::PacmanInstaller::new(true);
 
-    // Create PazckagerCore instance
-    let mut core = PazckagerCoreBuilder::new(store).unwrap();
+    let mut core = PazckagerCoreBuilder::new(store)
+        .with_installer(pacman)
+        .build()
+        .unwrap();
 
-    // Handle commands
     match cli.command {
         Commands::AddPackage(args) => {
             core.add_package(args.package_name, args.tool, args.category)?;
@@ -123,6 +121,10 @@ fn main() -> Result<()> {
                     package.package_name, package.instalation_tool
                 );
             }
+        }
+        Commands::SyncPackages => {
+            core.sync_packages()?;
+            println!("Packages succesfully sync");
         }
     }
 

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use models::{Category, InstallationTools, PackageData};
+use models::{Category, InstallationTools, PackageData, RawPackageData};
 use traits::{InstallationTool, PazckagerStorage};
 
 pub mod err;
@@ -109,6 +109,31 @@ impl<T: PazckagerStorage> PazckagerCore<T> {
         package_installer.update_package(&package.package_name)?;
 
         Ok(())
+    }
+
+    pub fn sync_packages(&mut self) -> Result<()> {
+        let mut packages_to_add = Vec::new();
+
+        for package_installer in self.package_installers.values() {
+            let packages_data = package_installer
+                .get_packages()
+                .into_iter()
+                .map(|raw_data| raw_data.to_package_data());
+
+            packages_to_add.extend(packages_data);
+        }
+
+        for package_data in packages_to_add {
+            if !self.store.package_exists(&package_data.package_name)? {
+                self.add_package(
+                    package_data.package_name,
+                    Some(package_data.instalation_tool),
+                    None,
+                )?;
+            }
+        }
+
+        todo!()
     }
 
     pub fn get_packages(&self) -> Result<Vec<PackageData>> {

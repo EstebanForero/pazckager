@@ -7,3 +7,4 @@ edition = "2024"
 clap = { version = "4.5.31", features = ["derive"] }
 pazckager_core = { path = "../pazckager_core" }
 local_db = { path = "../local_db" }
+pacman_bindings = { path = "../pacman_bindings" }
