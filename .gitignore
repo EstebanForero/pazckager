@@ -1,0 +1,16 @@
+# Rust-specific ignores
+/target
+**/*.rs.bk
+Cargo.lock  # Optional: Include if you want to commit it, remove if not
+*.log
+
+# Tauri-specific ignores (if applicable)
+/tauri_ui/src-tauri/target
+/tauri_ui/src-tauri/gen
+/tauri_ui/src-tauri/dist
+/tauri_ui/src-tauri/*.app
+/tauri_ui/src-tauri/*.deb
+/tauri_ui/src-tauri/*.dmg
+/tauri_ui/src-tauri/*.exe
+/tauri_ui/src-tauri/*.msi
+/tauri_ui/src-tauri/*.AppImage
