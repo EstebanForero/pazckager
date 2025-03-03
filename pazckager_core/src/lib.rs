@@ -32,6 +32,31 @@ impl<T: PazckagerStorage> PazckagerCore<T> {
         })
     }
 
+    pub fn change_package_category(
+        &mut self,
+        category_name: String,
+        package_name: String,
+    ) -> Result<()> {
+        if !self.store.category_exists(&category_name)? {
+            return Err(Error::CategoryDoesNotExist);
+        }
+
+        if !self.store.package_exists(&package_name)? {
+            return Err(Error::PackageDoesNotExists);
+        }
+
+        let package = self.store.get_package(&package_name)?;
+
+        self.store.update_package(PackageData {
+            package_name: package.package_name,
+            installation_tool: package.installation_tool,
+            category_name,
+            installed: package.installed,
+        })?;
+
+        Ok(())
+    }
+
     pub fn install_category(&mut self, category_name: String) -> Result<()> {
         let packages = self.store.get_packages()?;
 

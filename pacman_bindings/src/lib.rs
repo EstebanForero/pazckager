@@ -2,13 +2,34 @@ use pazckager_core::models::{InstallationTools, RawPackageData};
 use pazckager_core::traits::{InstallationTool, ToolError, ToolResult};
 use std::process::Command;
 
+#[derive(Debug, Clone, Copy)]
+pub enum PermissionMethod {
+    Sudo,
+    Pkexec,
+}
+
 pub struct PacmanInstaller {
-    sudo: bool,
+    permission_method: PermissionMethod,
 }
 
 impl PacmanInstaller {
-    pub fn new(sudo: bool) -> Self {
-        Self { sudo }
+    pub fn new(permission_method: PermissionMethod) -> Self {
+        Self { permission_method }
+    }
+
+    fn create_command_with_permissions(&self, command: &str) -> Command {
+        match self.permission_method {
+            PermissionMethod::Sudo => {
+                let mut cmd = Command::new("sudo");
+                cmd.arg(command);
+                cmd
+            }
+            PermissionMethod::Pkexec => {
+                let mut cmd = Command::new("pkexec");
+                cmd.arg(command);
+                cmd
+            }
+        }
     }
 }
 
@@ -18,13 +39,7 @@ impl InstallationTool for PacmanInstaller {
     }
 
     fn install_package(&mut self, package_name: &str) -> ToolResult<()> {
-        let mut command = if self.sudo {
-            let mut cmd = Command::new("sudo");
-            cmd.arg("pacman");
-            cmd
-        } else {
-            Command::new("pacman")
-        };
+        let mut command = self.create_command_with_permissions("pacman");
 
         let status = command
             .args(["-S", package_name, "--noconfirm"])
@@ -45,13 +60,7 @@ impl InstallationTool for PacmanInstaller {
     }
 
     fn delete_package(&mut self, package_name: &str) -> ToolResult<()> {
-        let mut command = if self.sudo {
-            let mut cmd = Command::new("sudo");
-            cmd.arg("pacman");
-            cmd
-        } else {
-            Command::new("pacman")
-        };
+        let mut command = self.create_command_with_permissions("pacman");
 
         let status = command
             .args(["-Rns", package_name, "--noconfirm"])
@@ -70,13 +79,7 @@ impl InstallationTool for PacmanInstaller {
     }
 
     fn update_package(&mut self, package_name: &str) -> ToolResult<()> {
-        let mut command = if self.sudo {
-            let mut cmd = Command::new("sudo");
-            cmd.arg("pacman");
-            cmd
-        } else {
-            Command::new("pacman")
-        };
+        let mut command = self.create_command_with_permissions("pacman");
 
         let status = command
             .args(["-Sy", package_name, "--noconfirm"])
@@ -95,13 +98,7 @@ impl InstallationTool for PacmanInstaller {
     }
 
     fn get_packages(&self) -> Vec<RawPackageData> {
-        let mut command = if self.sudo {
-            let mut cmd = Command::new("sudo");
-            cmd.arg("pacman");
-            cmd
-        } else {
-            Command::new("pacman")
-        };
+        let mut command = Command::new("pacman");
 
         match command.args(["-Qe"]).output() {
             Ok(output) if output.status.success() => {
@@ -129,14 +126,14 @@ mod tests {
 
     #[test]
     fn test_pacman_installer_creation() {
-        let installer = PacmanInstaller::new(true);
+        let installer = PacmanInstaller::new(PermissionMethod::Sudo);
         assert_eq!(installer.get_type(), InstallationTools::Pacman);
     }
 
     #[test]
     #[ignore]
     fn test_get_packages() {
-        let installer = PacmanInstaller::new(false);
+        let installer = PacmanInstaller::new(PermissionMethod::Sudo);
         let packages = installer.get_packages();
         assert!(!packages.is_empty(), "Should return some packages");
     }

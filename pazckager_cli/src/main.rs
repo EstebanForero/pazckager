@@ -3,7 +3,9 @@ use clap::{Args, Parser, Subcommand};
 // Assuming these are your existing imports
 use err::Result;
 use models::InstallationTools;
+use pacman_bindings::PermissionMethod;
 use pazckager_core::{models::PazckagerCoreBuilder, *};
+use pazckager_json_storage::JsonPazckagerStorage;
 
 // CLI structure definition
 #[derive(Parser)]
@@ -42,6 +44,8 @@ enum Commands {
     UninstallCategory(UninstallCategoryArgs),
     /// Delete a category
     DeleteCategory(DeleteCategoryArgs),
+    /// Change package category
+    ChangePackageCategory(ChangePackageCategoryArgs),
 }
 
 #[derive(Args)]
@@ -56,7 +60,7 @@ struct AddPackageArgs {
     /// Name of the package to add
     #[arg(short, long)]
     package_name: String,
-    /// Installation tool to use (optional)
+    /// Installation tool to use, (pacman)
     #[arg(short, long)]
     tool: InstallationTools,
     /// Category for the package (optional)
@@ -116,11 +120,21 @@ struct DeleteCategoryArgs {
     category_name: String,
 }
 
+#[derive(Args)]
+struct ChangePackageCategoryArgs {
+    /// Name of the package to change category
+    #[arg(short, long)]
+    package_name: String,
+    /// New category name
+    #[arg(short, long)]
+    new_category: String,
+}
+
 fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    let store = local_db::JsonPazckagerStorage::new("~/.local/share/pazckager_store.json").unwrap();
-    let pacman = pacman_bindings::PacmanInstaller::new(true);
+    let store = JsonPazckagerStorage::new("~/.local/share/pazckager_store.json").unwrap();
+    let pacman = pacman_bindings::PacmanInstaller::new(PermissionMethod::Sudo);
 
     let mut core = PazckagerCoreBuilder::new(store)
         .with_installer(pacman)
@@ -205,6 +219,10 @@ fn main() -> Result<()> {
         Commands::DeleteCategory(args) => {
             core.delete_category(args.category_name)?;
             println!("Category deleted successfully");
+        }
+        Commands::ChangePackageCategory(args) => {
+            core.change_package_category(args.new_category, args.package_name)?;
+            println!("Package category changed successfully");
         }
     }
 
