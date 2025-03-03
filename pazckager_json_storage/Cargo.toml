@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 authors = ["Esteban Forero estebanmff@outlook.com"]
 description = "Basic json based db for pazckager"
-licence = "MIT"
+license = "MIT"
 
 [dependencies]
 serde = { version = "1.0.218", features = ["derive"] }
