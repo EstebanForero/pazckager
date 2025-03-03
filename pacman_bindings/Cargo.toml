@@ -7,4 +7,4 @@ description = "Bindings to interact with pacman"
 license = "MIT"
 
 [dependencies]
-pazckager_core = { path = "../pazckager_core" }
+pazckager_core = { version = "0.1.0", path = "../pazckager_core" }

@@ -8,6 +8,6 @@ license = "MIT"
 
 [dependencies]
 clap = { version = "4.5.31", features = ["derive"] }
-pazckager_core = { path = "../pazckager_core" }
-pazckager_json_storage = { path = "../pazckager_json_storage" }
-pacman_bindings = { path = "../pacman_bindings" }
+pazckager_core = { version = "0.1.0", path = "../pazckager_core" }
+pazckager_json_storage = { version = "0.1.0", path = "../pazckager_json_storage" }
+pacman_bindings = { version = "0.1.0", path = "../pacman_bindings" }
