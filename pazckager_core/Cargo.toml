@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 authors = ["Esteban Forero estebanmff@outlook.com"]
 description = "pazckager core crate"
-licence = "MIT"
+license = "MIT"
 
 [dependencies]
 partial_struct = "0.4.3"
