@@ -58,7 +58,13 @@ impl<T: PazckagerStorage> PazckagerCore<T> {
     }
 
     pub fn get_category(&self, category_name: String) -> Result<Category> {
-        todo!()
+        if !self.store.category_exists(&category_name)? {
+            return Err(Error::CategoryDoesNotExist);
+        }
+
+        let category = self.store.get_category(&category_name)?;
+
+        Ok(category)
     }
 
     pub fn install_category(&mut self, category_name: String) -> Result<()> {
