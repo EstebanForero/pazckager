@@ -7,6 +7,8 @@ pub trait PazckagerStorage {
 
     fn get_categories(&self) -> StoreResult<Vec<Category>>;
 
+    fn get_category(&self, category_name: &str) -> StoreResult<Category>;
+
     fn category_exists(&self, category_name: &str) -> StoreResult<bool>;
 
     fn remove_category(&mut self, category_name: &str) -> StoreResult<()>;

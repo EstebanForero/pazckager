@@ -57,6 +57,10 @@ impl<T: PazckagerStorage> PazckagerCore<T> {
         Ok(())
     }
 
+    pub fn get_category(&self, category_name: String) -> Result<Category> {
+        todo!()
+    }
+
     pub fn install_category(&mut self, category_name: String) -> Result<()> {
         let packages = self.store.get_packages()?;
 

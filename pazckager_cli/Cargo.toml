@@ -1,6 +1,6 @@
 [package]
 name = "pazckager_cli"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["Esteban Forero estebanmff@outlook.com"]
 description = "cli for the pazckager core crate"

@@ -1,6 +1,6 @@
 [package]
 name = "pazckager_core"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["Esteban Forero estebanmff@outlook.com"]
 description = "pazckager core crate"

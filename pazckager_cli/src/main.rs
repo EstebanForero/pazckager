@@ -46,6 +46,15 @@ enum Commands {
     DeleteCategory(DeleteCategoryArgs),
     /// Change package category
     ChangePackageCategory(ChangePackageCategoryArgs),
+    // Get the info of a category
+    GetCategory(GetCategoryArgs),
+}
+
+#[derive(Args)]
+struct GetCategoryArgs {
+    /// Name of the package to add
+    #[arg(short, long)]
+    category_name: String,
 }
 
 #[derive(Args)]
@@ -223,6 +232,14 @@ fn main() -> Result<()> {
         Commands::ChangePackageCategory(args) => {
             core.change_package_category(args.new_category, args.package_name)?;
             println!("Package category changed successfully");
+        }
+        Commands::GetCategory(args) => {
+            let category = core.get_category(args.category_name)?;
+            println!("Category name: {}", category.category_name);
+            println!(
+                "Category info: {}",
+                category.additional_info.unwrap_or(String::new())
+            );
         }
     }
 

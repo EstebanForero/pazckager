@@ -130,6 +130,18 @@ impl PazckagerStorage for JsonPazckagerStorage {
 
         Ok(())
     }
+
+    fn get_category(&self, category_name: &str) -> StoreResult<Category> {
+        let category =
+            self.store
+                .categories
+                .get(category_name)
+                .ok_or(StoreError::InternalStoreError(
+                    "Category does not exist".to_string(),
+                ))?;
+
+        Ok(category.clone())
+    }
 }
 
 #[cfg(test)]
