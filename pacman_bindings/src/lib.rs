@@ -113,7 +113,7 @@ impl InstallationTool for PacmanInstaller {
                         RawPackageData {
                             package_name: parts.first().unwrap_or(&"").to_string(),
                             category_name: String::new(),
-                            instalation_tool: InstallationTools::Pacman,
+                            installation_tool: InstallationTools::Pacman,
                         }
                     })
                     .collect()

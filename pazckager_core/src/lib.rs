@@ -32,6 +32,62 @@ impl<T: PazckagerStorage> PazckagerCore<T> {
         })
     }
 
+    pub fn install_category(&mut self, category_name: String) -> Result<()> {
+        let packages = self.store.get_packages()?;
+
+        for package in packages {
+            if !package.installed && package.category_name == category_name {
+                self.install_package(package.package_name)?;
+            }
+        }
+
+        Ok(())
+    }
+
+    pub fn add_category(
+        &mut self,
+        category_name: String,
+        additional_info: Option<String>,
+    ) -> Result<()> {
+        self.store.store_category(Category {
+            category_name,
+            additional_info,
+        })?;
+
+        Ok(())
+    }
+
+    pub fn uninstall_category(&mut self, category_name: String) -> Result<()> {
+        let packages = self.store.get_packages()?;
+
+        for package in packages {
+            if package.installed && package.category_name == category_name {
+                self.uninstall_package(package.package_name)?;
+            }
+        }
+
+        Ok(())
+    }
+
+    pub fn delete_category(&mut self, category_name: String) -> Result<()> {
+        let packages = self.store.get_packages()?;
+
+        for package in packages {
+            if package.category_name == category_name {
+                self.store.update_package(PackageData {
+                    package_name: package.package_name,
+                    installation_tool: package.installation_tool,
+                    category_name: "default".to_string(),
+                    installed: package.installed,
+                })?;
+            }
+        }
+
+        self.store.remove_category(&category_name)?;
+
+        Ok(())
+    }
+
     pub fn install_package(&mut self, package_name: String) -> Result<()> {
         let mut package_data = self.store.get_package(&package_name)?;
 
@@ -52,16 +108,13 @@ impl<T: PazckagerStorage> PazckagerCore<T> {
     pub fn add_package(
         &mut self,
         package_name: String,
-        installation_tool: Option<InstallationTools>,
+        installation_tool: InstallationTools,
         package_category_name: Option<String>,
     ) -> Result<()> {
-        let package_installer = if let Some(installation_tool) = installation_tool {
-            self.package_installers
-                .get_mut(&installation_tool)
-                .ok_or(Error::InstallationToolDoesNotExist)?
-        } else {
-            self.package_installers.values_mut().next().unwrap()
-        };
+        let package_installer = self
+            .package_installers
+            .get_mut(&installation_tool)
+            .ok_or(Error::InstallationToolDoesNotExist)?;
 
         let mut category_name = package_category_name
             .clone()

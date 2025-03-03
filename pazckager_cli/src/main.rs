@@ -24,7 +24,6 @@ enum Commands {
     DeletePackage(DeletePackageArgs),
     /// Unistall an existing package
     UninstallPackage(DeletePackageArgs),
-
     /// Updates an existing package
     UpdatePackage(UpdatePackageArgs),
     /// Lists all packages
@@ -33,8 +32,16 @@ enum Commands {
     ListCategories,
     /// Lists packages in a specific category
     ListCategoryPackages(ListCategoryPackagesArgs),
-
+    /// Sync packages
     SyncPackages,
+    /// Install all packages in a category
+    InstallCategory(InstallCategoryArgs),
+    /// Add a new category
+    AddCategory(AddCategoryArgs),
+    /// Uninstall all packages in a category
+    UninstallCategory(UninstallCategoryArgs),
+    /// Delete a category
+    DeleteCategory(DeleteCategoryArgs),
 }
 
 #[derive(Args)]
@@ -51,7 +58,7 @@ struct AddPackageArgs {
     package_name: String,
     /// Installation tool to use (optional)
     #[arg(short, long)]
-    tool: Option<InstallationTools>,
+    tool: InstallationTools,
     /// Category for the package (optional)
     #[arg(short, long)]
     category: Option<String>,
@@ -74,6 +81,37 @@ struct UpdatePackageArgs {
 #[derive(Args)]
 struct ListCategoryPackagesArgs {
     /// Name of the category to list packages from
+    #[arg(short, long)]
+    category_name: String,
+}
+
+#[derive(Args)]
+struct InstallCategoryArgs {
+    /// Name of the category to install
+    #[arg(short, long)]
+    category_name: String,
+}
+
+#[derive(Args)]
+struct AddCategoryArgs {
+    /// Name of the category to add
+    #[arg(short, long)]
+    category_name: String,
+    /// Additional info about the category
+    #[arg(short, long)]
+    additional_info: Option<String>,
+}
+
+#[derive(Args)]
+struct UninstallCategoryArgs {
+    /// Name of the category to uninstall
+    #[arg(short, long)]
+    category_name: String,
+}
+
+#[derive(Args)]
+struct DeleteCategoryArgs {
+    /// Name of the category to delete
     #[arg(short, long)]
     category_name: String,
 }
@@ -107,8 +145,11 @@ fn main() -> Result<()> {
             println!("Packages:");
             for package in packages {
                 println!(
-                    "- {} (Tool: {:?}, Category: {})",
-                    package.package_name, package.instalation_tool, package.category_name
+                    "- {} (Tool: {:?}, Category: {}, installed: {})",
+                    package.package_name,
+                    package.installation_tool,
+                    package.category_name,
+                    package.installed
                 );
             }
         }
@@ -127,8 +168,8 @@ fn main() -> Result<()> {
             println!("Packages in category:");
             for package in packages {
                 println!(
-                    "- {} (Tool: {:?})",
-                    package.package_name, package.installation_tool
+                    "- {} (Tool: {:?}, installed: {})",
+                    package.package_name, package.installation_tool, package.installed
                 );
             }
         }
@@ -148,6 +189,22 @@ fn main() -> Result<()> {
                 println!("Error installing package: {err}");
             }
             println!("Package uninstalled succesfully");
+        }
+        Commands::InstallCategory(args) => {
+            core.install_category(args.category_name)?;
+            println!("Category installed successfully");
+        }
+        Commands::AddCategory(args) => {
+            core.add_category(args.category_name, args.additional_info)?;
+            println!("Category added successfully");
+        }
+        Commands::UninstallCategory(args) => {
+            core.uninstall_category(args.category_name)?;
+            println!("Category uninstalled successfully");
+        }
+        Commands::DeleteCategory(args) => {
+            core.delete_category(args.category_name)?;
+            println!("Category deleted successfully");
         }
     }
 

@@ -67,8 +67,8 @@ impl PazckagerStorage for JsonPazckagerStorage {
         Ok(self.store.categories.contains_key(category_name))
     }
 
-    fn remove_category(&mut self) -> StoreResult<()> {
-        self.store.categories.clear();
+    fn remove_category(&mut self, category_name: &str) -> StoreResult<()> {
+        self.store.categories.remove(category_name);
         self.save_to_file()?;
         Ok(())
     }
@@ -110,7 +110,9 @@ impl PazckagerStorage for JsonPazckagerStorage {
         self.store
             .packages
             .remove(package_name)
-            .ok_or(StoreError::InternalStoreError(&"Package does not exists"));
+            .ok_or(StoreError::InternalStoreError(
+                "Package does not exists".to_string(),
+            ))?;
 
         self.save_to_file()?;
 

@@ -9,7 +9,7 @@ pub trait PazckagerStorage {
 
     fn category_exists(&self, category_name: &str) -> StoreResult<bool>;
 
-    fn remove_category(&mut self) -> StoreResult<()>;
+    fn remove_category(&mut self, category_name: &str) -> StoreResult<()>;
 
     fn store_package(&mut self, package: PackageData) -> StoreResult<()>;
 
