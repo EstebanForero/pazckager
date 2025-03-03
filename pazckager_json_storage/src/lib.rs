@@ -120,13 +120,15 @@ impl PazckagerStorage for JsonPazckagerStorage {
     }
 
     fn update_package(&mut self, package: PackageData) -> StoreResult<()> {
-        let mut package_mut = self.store.packages.get_mut(&package.package_name).ok_or(
+        let package_mut = self.store.packages.get_mut(&package.package_name).ok_or(
             StoreError::InternalStoreError("Package does not exists".to_string()),
         )?;
 
         package_mut.category_name = package.category_name;
         package_mut.installation_tool = package.installation_tool;
         package_mut.installed = package.installed;
+
+        self.save_to_file()?;
 
         Ok(())
     }
